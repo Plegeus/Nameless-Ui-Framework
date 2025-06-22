@@ -1,0 +1,8 @@
+[package]
+name = "nameless_ui_framework"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+imgui = { path = "./../imgui" }
+imgui_derive = { path = "./../imgui_derive" }
