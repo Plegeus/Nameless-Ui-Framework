@@ -4,5 +4,5 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-imgui = { path = "./../imgui" }
-imgui_derive = { path = "./../imgui_derive" }
+imgui = { path = "./../RustImGui/imgui" }
+imgui_derive = { path = "./../RustImGui/imgui_derive" }

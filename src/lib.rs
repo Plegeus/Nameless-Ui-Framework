@@ -4,6 +4,7 @@ use std::{collections::HashSet, fmt::Display, hash::Hash, ops::Index};
 use crate::provider::Provider;
 pub type GuiColorVar = imgui::ImGuiCol;
 pub type GuiStyleVar = imgui::ImGuiStyleVar;
+pub use imgui;
 
 
 pub mod provider;
@@ -230,7 +231,7 @@ pub enum GuiTableFlags {
 
 
 pub trait GuiProvider {
-  
+
   fn push_style_color(&mut self, idx: GuiColorVar, color: impl GuiColor);
   fn pop_style_color(&mut self, n: usize);
   fn push_style_var(&mut self, idx: GuiStyleVar, x: f32, y: impl GuiOption<f32>);
