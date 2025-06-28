@@ -1,8 +1,10 @@
 
-use std::{f32::consts::PI, fmt::Display};
+use std::{fmt::Display};
 
+use imgui::*;
 use imgui_derive::assert_imgui_context;
-use crate::{GuiCallback, GuiColor, GuiColorVar, GuiDisplay, GuiFlags, GuiOption, GuiProvider, GuiStyleVar};
+
+use crate::GuiProvider;
 
 
 pub struct Provider {
@@ -15,13 +17,12 @@ impl Provider {
 }
 
 
-
 impl GuiProvider for Provider {
 
   #[assert_imgui_context]
-  fn push_style_color(&mut self, idx: GuiColorVar, color: impl GuiColor) {
+  fn push_style_color(&mut self, idx: ColorVar, color: impl Into<Color>) {
     unsafe {
-      imgui::push_style_color(idx, color.into());
+      imgui::push_style_color(idx, color);
     }
   }
   #[assert_imgui_context]
@@ -31,15 +32,15 @@ impl GuiProvider for Provider {
     }
   }
   #[assert_imgui_context]
-  fn push_style_var(&mut self, idx: GuiStyleVar, x: f32, y: impl GuiOption<f32>) {
+  fn push_style_var(&mut self, idx: StyleVar, x: f32, y: impl OptionOwned<f32>) {
     unsafe {
-      imgui::push_style_var(idx, x, y.into());
+      imgui::push_style_var(idx, x, y);
     } 
   }
   #[assert_imgui_context]
   fn pop_style_var(&mut self, n: usize) {
     unsafe {
-      imgui::pop_style_var(Some(n as i32));
+      imgui::pop_style_var(n);
     }
   }
 
@@ -50,9 +51,9 @@ impl GuiProvider for Provider {
     }
   }
   #[assert_imgui_context]
-  fn is_item_clicked(&mut self, mouse_button: impl GuiOption<i32>) -> bool {
+  fn is_item_clicked(&mut self, mouse_button: impl OptionOwned<MouseButton>) -> bool {
     unsafe {
-      imgui::is_item_clicked(mouse_button.into())
+      imgui::is_item_clicked(mouse_button)
     }
   }
   
@@ -69,9 +70,9 @@ impl GuiProvider for Provider {
     }
   }
   #[assert_imgui_context]
-  fn same_line(&mut self, offset: impl GuiOption<f32>, spacing: impl GuiOption<f32>) {
+  fn same_line(&mut self, offset: impl OptionOwned<f32>, spacing: impl OptionOwned<f32>) {
     unsafe {
-      imgui::same_line(offset.into(), spacing.into());
+      imgui::same_line(offset, spacing);
     }
   }
   #[assert_imgui_context]
@@ -80,11 +81,29 @@ impl GuiProvider for Provider {
       imgui::push_item_width(w);
     }
   }
+  #[assert_imgui_context]
+  fn set_next_window_pos(&mut self, pos: [f32; 2], cond: impl OptionOwned<Cond>, pivot: impl OptionOwned<[f32; 2]>) {
+    unsafe {
+      imgui::set_next_window_pos(pos, cond, pivot);
+    }
+  }
+  #[assert_imgui_context]
+  fn set_next_window_size(&mut self, size: [f32; 2], cond: impl OptionOwned<Cond>) {
+    unsafe {
+      imgui::set_next_window_size(size, cond);
+    }
+  }
+  #[assert_imgui_context]
+  fn get_window_pos(&mut self) -> (f32, f32) {
+    unsafe {
+      imgui::get_window_pos()
+    }
+  }
 
   #[assert_imgui_context]
-  fn begin<'a, D: Display + 'static>(&mut self, title: &D, open: impl GuiOption<&'a mut bool>, flags: impl GuiFlags) {
+  fn begin<'a, D: Display>(&mut self, title: D, open: impl OptionMut<'a, bool>, flags: impl OptionRef<'a, WindowFlags>) {
     unsafe {
-      imgui::begin(title, open.into(), flags.gui_flags());
+      imgui::begin(title, open, flags);
     }
   }
   #[assert_imgui_context]
@@ -94,9 +113,9 @@ impl GuiProvider for Provider {
     }
   }
   #[assert_imgui_context]
-  fn begin_child<'a, D: Display + 'static>(&mut self, id: &D, size: impl GuiOption<[f32; 2]>, child_flags: impl GuiFlags, window_flags: impl GuiFlags) {
+  fn begin_child<'a, D: Display>(&mut self, id: D, size: impl OptionOwned<[f32; 2]>, child_flags: impl OptionRef<'a, ChildFlags>, window_flags: impl OptionRef<'a, WindowFlags>) {
     unsafe {
-      imgui::begin_child(id, size.into(), child_flags.gui_flags(), window_flags.gui_flags());
+      imgui::begin_child(id, size, child_flags, window_flags);
     }
   }
   #[assert_imgui_context]
@@ -106,21 +125,21 @@ impl GuiProvider for Provider {
     }
   }
   #[assert_imgui_context]
-  fn open_popup<D: GuiDisplay>(&mut self, id: &D, flags: impl GuiFlags) {
+  fn open_popup<'a, D: Display>(&mut self, id: D, flags: impl OptionRef<'a, PopupFlags>) {
     unsafe {
-      imgui::open_popup(id, flags.gui_flags());
+      imgui::open_popup(id, flags);
     }
   }
   #[assert_imgui_context]
-  fn begin_popup<D: GuiDisplay>(&mut self, id: &D, flags: impl GuiFlags) -> bool {
+  fn begin_popup<'a, D: Display>(&mut self, id: D, flags: impl OptionRef<'a, WindowFlags>) -> bool {
     unsafe {
-      imgui::begin_popup(id, flags.gui_flags())
+      imgui::begin_popup(id, flags)
     }
   }
   #[assert_imgui_context]
-  fn begin_popup_modal<'a, D: GuiDisplay>(&mut self, id: &D, open: impl GuiOption<&'a mut bool>, flags: impl GuiFlags) -> bool {
+  fn begin_popup_modal<'a, D: Display>(&mut self, id: D, open: impl OptionMut<'a, bool>, flags: impl OptionRef<'a, WindowFlags>) -> bool {
     unsafe {
-      imgui::begin_popup_modal(id, open.into(), flags.gui_flags())
+      imgui::begin_popup_modal(id, open, flags)
     }
   }
   #[assert_imgui_context]
@@ -150,22 +169,22 @@ impl GuiProvider for Provider {
     }
   }
   #[assert_imgui_context]
-  fn separator_text<D: GuiDisplay>(&mut self, text: &D) {
+  fn separator_text<D: Display>(&mut self, text: D) {
     unsafe {
       imgui::separator_text(text);
     }
   }
 
   #[assert_imgui_context]
-  fn columns<'a, D: GuiDisplay>(&mut self, count: i32, id: impl GuiOption<&'a D>, border: impl GuiOption<bool>) {
+  fn columns<D: Display>(&mut self, count: i32, id: impl OptionOwned<D>, border: impl OptionOwned<bool>) {
     unsafe {
-      imgui::columns(count, id.into(), border.into());
+      imgui::columns(count, id, border);
     }
   }
   #[assert_imgui_context]
-  fn table_setup_column<D: GuiDisplay>(&mut self, label: &D, flags: impl GuiFlags, width_or_weight: impl GuiOption<f32>, user_id: impl GuiOption<u32>) {
+  fn table_setup_column<'a, D: Display>(&mut self, label: D, flags: impl OptionRef<'a, TableColumnFlags>, width_or_weight: impl OptionOwned<f32>, user_id: impl OptionOwned<u32>) {
     unsafe {
-      imgui::table_setup_column(label, flags.gui_flags(), width_or_weight.into(), user_id.into());
+      imgui::table_setup_column(label, flags, width_or_weight, user_id);
     }
   }
   #[assert_imgui_context]
@@ -175,9 +194,9 @@ impl GuiProvider for Provider {
     }
   }
   #[assert_imgui_context]
-  fn begin_table<D: GuiDisplay>(&mut self, id: &D, columns: i32, flags: impl GuiFlags) -> bool {
+  fn begin_table<'a, D: Display>(&mut self, id: D, columns: i32, flags: impl OptionRef<'a, TableFlags>) -> bool {
     unsafe {
-      imgui::begin_table(id, columns, flags.gui_flags())
+      imgui::begin_table(id, columns, flags)
     }
   }
   #[assert_imgui_context]
@@ -187,9 +206,9 @@ impl GuiProvider for Provider {
     }
   }
   #[assert_imgui_context]
-  fn table_next_row(&mut self, flags: impl GuiFlags, min_row_height: impl GuiOption<f32>) {
+  fn table_next_row<'a>(&mut self, flags: impl OptionRef<'a, TableRowFlags>, min_row_height: impl OptionOwned<f32>) {
     unsafe {
-      imgui::table_next_row(flags.gui_flags(), min_row_height.into());
+      imgui::table_next_row(flags, min_row_height);
     }
   }
   #[assert_imgui_context]
@@ -206,39 +225,39 @@ impl GuiProvider for Provider {
   }
 
   #[assert_imgui_context]
-  fn text<D: GuiDisplay>(&mut self, text: &D) {
+  fn text<D: Display>(&mut self, text: D) {
     unsafe {
       imgui::text(text);
     }
   }
   #[assert_imgui_context]
-  fn text_wrapped<D: GuiDisplay>(&mut self, text: &D) {
+  fn text_wrapped<D: Display>(&mut self, text: D) {
     unsafe {
       imgui::text_wrapped(text);
     }
   }
   #[assert_imgui_context]
-  fn button<'a, D: Display + 'static>(&mut self, label: &D, size: impl GuiOption<[f32; 2]>) -> bool {
+  fn button<D: Display>(&mut self, label: D, size: impl OptionOwned<[f32; 2]>) -> bool {
     unsafe {
-      imgui::button(label, size.into())
+      imgui::button(label, size)
     }
   }
   #[assert_imgui_context]
-  fn checkbox<D: GuiDisplay>(&mut self, label: &D, value: &mut bool) -> bool {
+  fn checkbox<D: Display>(&mut self, label: D, value: &mut bool) -> bool {
     unsafe {
       imgui::checkbox(label, value)
     }
   }
   #[assert_imgui_context]
-  fn input_text<'a, D: GuiDisplay>(&mut self, label: &D, string: &mut String, flags: impl GuiFlags, callback: impl GuiOption<fn()>, user_data: impl GuiOption<*const ()>) -> bool {
+  fn input_text<'a, D: Display>(&mut self, label: D, string: &mut String, flags: impl OptionRef<'a, InputTextFlags>, callback: impl OptionOwned<fn()>, user_data: impl OptionOwned<*const ()>) -> bool {
     unsafe {
-      imgui::input_text(label, string, flags.gui_flags(), callback.into(), user_data.into())  
+      imgui::input_text(label, string, flags, callback, user_data)  
     }
   }
   #[assert_imgui_context]
-  fn input_text_multi_line<'a, D: GuiDisplay>(&mut self, label: &D, string: &mut String, size: impl GuiOption<[f32; 2]>, flags: impl GuiFlags, callback: impl GuiOption<fn()>, user_data: impl GuiOption<*const ()>) -> bool {
+  fn input_text_multi_line<'a, D: Display>(&mut self, label: D, string: &mut String, size: impl OptionOwned<[f32; 2]>, flags: impl OptionRef<'a, InputTextFlags>, callback: impl OptionOwned<fn()>, user_data: impl OptionOwned<*const ()>) -> bool {
     unsafe {
-      imgui::input_text_multi_line(label, string, size.into(), flags.gui_flags(), callback.into(), user_data.into())
+      imgui::input_text_multiline(label, string, size, flags, callback, user_data)
     }
   }
 
