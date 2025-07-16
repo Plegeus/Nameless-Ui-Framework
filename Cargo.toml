@@ -4,5 +4,10 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+<<<<<<< HEAD
 imgui = { path = "./../RustImGui/imgui" }
 imgui_derive = { path = "./../RustImGui/imgui_derive" }
+=======
+imgui = { path = "../RustImGUi/imgui" }
+imgui_derive = { path = "../RustImGUi/imgui_derive" }
+>>>>>>> 4a7a417be55a112e6793f74b28612d6efa24fb16
