@@ -88,7 +88,7 @@ pub trait ExtendedGuiProvider: GuiProvider {
     if self.begin_table(id, C as i32, flags) {
       for row in rows {
         for item in row {
-          if let Some(f) = item.into() {
+          if let Some(_f) = item.into() {
             //f()
           }
           self.table_next_column();
