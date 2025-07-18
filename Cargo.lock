@@ -78,7 +78,7 @@ checksum = "a8d1add55171497b4705a648c6b583acafb01d58050a51727785f0b2c8e0a2b2"
 [[package]]
 name = "imgui"
 version = "0.1.0"
-source = "git+https://github.com/Plegeus/RustImGui.git#094e9fc2db2860493857b944ed342c15fc53d84f"
+source = "git+https://github.com/Plegeus/RustImGui.git#f3ad56a5c4b2bc5d9721b057fe6085d4489bc619"
 dependencies = [
  "bindgen",
  "imgui_derive",
@@ -87,7 +87,7 @@ dependencies = [
 [[package]]
 name = "imgui_derive"
 version = "0.1.0"
-source = "git+https://github.com/Plegeus/RustImGui.git#094e9fc2db2860493857b944ed342c15fc53d84f"
+source = "git+https://github.com/Plegeus/RustImGui.git#f3ad56a5c4b2bc5d9721b057fe6085d4489bc619"
 dependencies = [
  "quote",
  "syn",
@@ -95,18 +95,18 @@ dependencies = [
 
 [[package]]
 name = "itertools"
-version = "0.12.1"
+version = "0.13.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ba291022dbbd398a455acf126c1e341954079855bc60dfdda641363bd6922569"
+checksum = "413ee7dfc52ee1a4949ceeb7dbc8a33f2d6c088194d9f922fb8318faf1f01186"
 dependencies = [
  "either",
 ]
 
 [[package]]
 name = "libc"
-version = "0.2.173"
+version = "0.2.174"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d8cfeafaffdbc32176b64fb251369d52ea9f0a8fbc6f8759edffef7b525d64bb"
+checksum = "1171693293099992e19cddea4e8b849964e9846f4acee11b3948bcc337be8776"
 
 [[package]]
 name = "libloading"
@@ -156,9 +156,9 @@ dependencies = [
 
 [[package]]
 name = "prettyplease"
-version = "0.2.34"
+version = "0.2.35"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6837b9e10d61f45f987d50808f83d1ee3d206c66acf650c3e4ae2e1f6ddedf55"
+checksum = "061c1221631e079b26479d25bbf2275bfe5917ae8419cd7e34f13bfc2aa7539a"
 dependencies = [
  "proc-macro2",
  "syn",

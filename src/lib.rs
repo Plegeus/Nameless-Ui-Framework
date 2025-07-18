@@ -73,10 +73,10 @@ pub trait ExtendedGuiProvider: GuiProvider {
     res
   }
   fn red_button<D: Display>(&mut self, label: D, size: impl OptionOwned<[f32; 2]>) -> bool {
-    self.color_button(label, size, Color::Red, Color::LightRed, Color::DarkRed)
+    self.color_button(label, size, Color::RED, Color::LIGHT_RED, Color::DARK_RED)
   }
   fn gray_button<D: Display>(&mut self, label: D, size: impl OptionOwned<[f32; 2]>) -> bool {
-    self.color_button(label, size, Color::Gray, Color::LightGray, Color::DarkGray)
+    self.color_button(label, size, Color::GRAY, Color::LIGHT_GRAY, Color::DARK_GRAY)
   }
 
   fn grid<'a, D, const C: usize, const R: usize, F>(&mut self, id: D, rows: [[impl OptionOwned<F>; C]; R], flags: impl OptionRef<'a, TableFlags>) 
