@@ -3,6 +3,8 @@ use std::{fmt::Display};
 
 pub use imgui::{ self, * };
 
+use crate::provider::Provider;
+
 
 pub mod provider;
 
@@ -59,9 +61,6 @@ pub trait GuiProvider {
 }
 
 
-//pub trait GuiGrid<V, T>: Into<Vec<V>> where V: Into<Vec<impl GuiOption<T>>> { }
-//impl<V, T, U> GuiGrid<V, T> for U where U: Into<Vec<V>>, V: Into<Vec<impl GuiOption<T>>> { }
-
 pub trait ExtendedGuiProvider: GuiProvider {
 
   fn color_button<D: Display>(&mut self, label: D, size: impl OptionOwned<[f32; 2]>, color: Color, light: Color, dark: Color) -> bool {
@@ -72,36 +71,58 @@ pub trait ExtendedGuiProvider: GuiProvider {
     self.pop_style_color(3);
     res
   }
-  fn red_button<D: Display>(&mut self, label: D, size: impl OptionOwned<[f32; 2]>) -> bool {
-    self.color_button(label, size, Color::RED, Color::LIGHT_RED, Color::DARK_RED)
+  /*fn red_button<D: Display>(&mut self, label: D, size: impl OptionOwned<[f32; 2]>) -> bool {
+    self.color_button(label, size, Color::Red, Color::LightRed, Color::DarkRed)
   }
   fn gray_button<D: Display>(&mut self, label: D, size: impl OptionOwned<[f32; 2]>) -> bool {
-    self.color_button(label, size, Color::GRAY, Color::LIGHT_GRAY, Color::DARK_GRAY)
-  }
+    self.color_button(label, size, Color::Gray, Color::LightGray, Color::DarkGray)
+  }*/
 
-  fn grid<'a, D, const C: usize, const R: usize, F>(&mut self, id: D, rows: [[impl OptionOwned<F>; C]; R], flags: impl OptionRef<'a, TableFlags>) 
-  where 
-    D: Display,
-    F: FnOnce(),
-  {
-
-    if self.begin_table(id, C as i32, flags) {
-      for row in rows {
-        for item in row {
-          if let Some(_f) = item.into() {
-            //f()
-          }
-          self.table_next_column();
-        }
-      }
-      self.end_table();
-    }
-  }
+  fn grid<'a, D: Display, const C: usize, const R: usize>(&mut self, id: D, rows: [[impl OptionOwned<GuiItem>; C]; R], flags: impl OptionRef<'a, TableFlags>);
 
 }
 
-impl<T: GuiProvider> ExtendedGuiProvider for T { }
+impl ExtendedGuiProvider for Provider {
+  fn grid<'a, D: Display, const C: usize, const R: usize>(&mut self, id: D, rows: [[impl OptionOwned<GuiItem>; C]; R], flags: impl OptionRef<'a, TableFlags>) {
+    if self.begin_table(&id, C as i32, flags) {
+      for i in 0..C {
+        self.table_setup_column(format!("{}_column_{i}", &id), None, 1.0 / C as f32, None);
+      }
+      for row in rows {
+        for item in row {
+          self.table_next_column();
+          if let Some(item) = item.into_option() {
+            item.draw(self);
+          }
+        }
+      }
+      self.end_table();
+    }      
+  }
+}
 
+
+pub enum GuiItem {
+  Button(String, Option<[f32; 2]>), // label, size
+  ColorButton(String, Option<[f32; 2]>, Color, Color, Color), // label, size, color, light, dark
+  RedButton(String, Option<[f32; 2]>),
+}
+impl GuiItem {
+  pub fn draw(&self, p: &mut Provider) {
+    use GuiItem::*;
+    match self {
+      Button(label, size) => { 
+        p.button(label, *size); 
+      },
+      ColorButton(label, size, color, light, dark) => { 
+        p.color_button(label, *size, *color, *light, *dark); 
+      },
+      RedButton(label, size) => {
+        p.color_button(&label, *size, Color::RED, Color::LIGHT_RED, Color::DARK_RED);
+      }
+    }
+  }
+}
 
 
 
