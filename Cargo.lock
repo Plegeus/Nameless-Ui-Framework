@@ -78,7 +78,7 @@ checksum = "a8d1add55171497b4705a648c6b583acafb01d58050a51727785f0b2c8e0a2b2"
 [[package]]
 name = "imgui"
 version = "0.1.0"
-source = "git+https://github.com/Plegeus/RustImGui.git#56efb9f5b99f11d137f4141988192e17119bb4b5"
+source = "git+https://github.com/Plegeus/RustImGui.git#686ead52faf3b6e14ae77ed31ec64c97ec546bb0"
 dependencies = [
  "bindgen",
  "imgui_derive",
@@ -87,7 +87,7 @@ dependencies = [
 [[package]]
 name = "imgui_derive"
 version = "0.1.0"
-source = "git+https://github.com/Plegeus/RustImGui.git#56efb9f5b99f11d137f4141988192e17119bb4b5"
+source = "git+https://github.com/Plegeus/RustImGui.git#686ead52faf3b6e14ae77ed31ec64c97ec546bb0"
 dependencies = [
  "quote",
  "syn",

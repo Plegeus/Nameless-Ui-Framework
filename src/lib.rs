@@ -1,12 +1,10 @@
 
-use std::{fmt::Display};
-
-pub use imgui::{ self, * };
-
-use crate::provider::Provider;
-
-
 pub mod provider;
+pub mod gui_item;
+
+use std::fmt::{Display};
+pub use imgui::{ self, * };
+use crate::{gui_item::{Item, GuiReturn}, provider::CheckedProvider};
 
 
 pub trait GuiProvider {
@@ -60,7 +58,6 @@ pub trait GuiProvider {
 
 }
 
-
 pub trait ExtendedGuiProvider: GuiProvider {
 
   fn color_button<D: Display>(&mut self, label: D, size: impl OptionOwned<[f32; 2]>, color: Color, light: Color, dark: Color) -> bool {
@@ -78,12 +75,12 @@ pub trait ExtendedGuiProvider: GuiProvider {
     self.color_button(label, size, Color::Gray, Color::LightGray, Color::DarkGray)
   }*/
 
-  fn grid<'a, D: Display, const C: usize, const R: usize>(&mut self, id: D, rows: [[impl OptionOwned<GuiItem>; C]; R], flags: impl OptionRef<'a, TableFlags>);
+  fn grid<'a, D: Display, const C: usize, const R: usize, T: GuiReturn>(&mut self, id: D, rows: [[impl OptionOwned<Item<T>>; C]; R], flags: impl OptionRef<'a, TableFlags>);
 
 }
 
-impl ExtendedGuiProvider for Provider {
-  fn grid<'a, D: Display, const C: usize, const R: usize>(&mut self, id: D, rows: [[impl OptionOwned<GuiItem>; C]; R], flags: impl OptionRef<'a, TableFlags>) {
+impl ExtendedGuiProvider for CheckedProvider {
+  fn grid<'a, D: Display, const C: usize, const R: usize, T: GuiReturn>(&mut self, id: D, rows: [[impl OptionOwned<Item<T>>; C]; R], flags: impl OptionRef<'a, TableFlags>) {
     if self.begin_table(&id, C as i32, flags) {
       for i in 0..C {
         self.table_setup_column(format!("{}_column_{i}", &id), None, 1.0 / C as f32, None);
@@ -91,7 +88,7 @@ impl ExtendedGuiProvider for Provider {
       for row in rows {
         for item in row {
           self.table_next_column();
-          if let Some(item) = item.into_option() {
+          if let Some(mut item) = item.into_option() {
             item.draw(self);
           }
         }
@@ -102,27 +99,8 @@ impl ExtendedGuiProvider for Provider {
 }
 
 
-pub enum GuiItem {
-  Button(String, Option<[f32; 2]>), // label, size
-  ColorButton(String, Option<[f32; 2]>, Color, Color, Color), // label, size, color, light, dark
-  RedButton(String, Option<[f32; 2]>),
-}
-impl GuiItem {
-  pub fn draw(&self, p: &mut Provider) {
-    use GuiItem::*;
-    match self {
-      Button(label, size) => { 
-        p.button(label, *size); 
-      },
-      ColorButton(label, size, color, light, dark) => { 
-        p.color_button(label, *size, *color, *light, *dark); 
-      },
-      RedButton(label, size) => {
-        p.color_button(&label, *size, Color::RED, Color::LIGHT_RED, Color::DARK_RED);
-      }
-    }
-  }
-}
+
+
 
 
 
