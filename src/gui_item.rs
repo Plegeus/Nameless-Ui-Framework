@@ -9,7 +9,7 @@ use crate::{GuiProvider};
 pub trait GuiReturn: Clone { }
 
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub enum Item<T> {
   // elements
   Text(String),
