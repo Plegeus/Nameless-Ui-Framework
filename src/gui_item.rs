@@ -6,9 +6,6 @@ use serde::{Deserialize, Serialize};
 use crate::{GuiProvider};
 
 
-pub trait GuiReturn: Clone { }
-
-
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub enum Item<T> {
   // elements
@@ -33,7 +30,7 @@ impl Item<bool> {
     Self::CheckBox(format!("{label}"), value.into_option().unwrap_or(false))
   }
 
-  pub fn draw<P: GuiProvider>(&mut self, p: &mut P) -> bool {
+  pub fn draw_bool<P: GuiProvider>(&mut self, p: &mut P) -> bool {
     match self {
       Item::Button(label, size) => p.button(label, *size),
       Item::CheckBox(label, value) => p.checkbox(label, value),
@@ -42,10 +39,7 @@ impl Item<bool> {
   }
 
 }
-impl<T> Item<T> 
-where 
-  T: GuiReturn,
-{
+impl<T: Clone> Item<T> {
 
   // elements
   pub fn text<D: Display>(text: D) -> Self {
@@ -97,7 +91,7 @@ where
       },
       Item::If(items) => {
         let (cond, conseq) = &mut **items;
-        if cond.draw(p) {
+        if cond.draw_bool(p) {
           conseq.draw(p)
         } else {
           None
@@ -105,7 +99,7 @@ where
       },
       Item::IfElse(items) => {
         let (cond, conseq, alt) = &mut **items;
-        if cond.draw(p) {
+        if cond.draw_bool(p) {
           conseq.draw(p)
         } else {
           alt.draw(p)
@@ -137,14 +131,12 @@ macro_rules! if_ {
 #[cfg(test)]
 pub mod gui_item {
 
-  use crate::{gui_item::GuiReturn, provider::EmptyProvider};
+  use crate::{provider::EmptyProvider};
   use super::Item::{ self, * };
 
   
   #[derive(Clone, Copy, PartialEq, Eq)]
   struct S(i32);
-
-  impl GuiReturn for S { }
 
 
   #[test]

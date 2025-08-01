@@ -4,7 +4,7 @@ pub mod gui_item;
 
 use std::fmt::{Display};
 pub use imgui::{ self, * };
-use crate::{gui_item::{Item, GuiReturn}, provider::CheckedProvider};
+use crate::{gui_item::{Item}, provider::CheckedProvider};
 
 
 pub trait GuiProvider {
@@ -75,12 +75,12 @@ pub trait ExtendedGuiProvider: GuiProvider {
     self.color_button(label, size, Color::Gray, Color::LightGray, Color::DarkGray)
   }*/
 
-  fn grid<'a, D: Display, const C: usize, const R: usize, T: GuiReturn>(&mut self, id: D, rows: [[impl OptionOwned<Item<T>>; C]; R], flags: impl OptionRef<'a, TableFlags>);
+  fn grid<'a, D: Display, const C: usize, const R: usize, T: Clone>(&mut self, id: D, rows: [[impl OptionOwned<Item<T>>; C]; R], flags: impl OptionRef<'a, TableFlags>);
 
 }
 
 impl ExtendedGuiProvider for CheckedProvider {
-  fn grid<'a, D: Display, const C: usize, const R: usize, T: GuiReturn>(&mut self, id: D, rows: [[impl OptionOwned<Item<T>>; C]; R], flags: impl OptionRef<'a, TableFlags>) {
+  fn grid<'a, D: Display, const C: usize, const R: usize, T: Clone>(&mut self, id: D, rows: [[impl OptionOwned<Item<T>>; C]; R], flags: impl OptionRef<'a, TableFlags>) {
     if self.begin_table(&id, C as i32, flags) {
       for i in 0..C {
         self.table_setup_column(format!("{}_column_{i}", &id), None, 1.0 / C as f32, None);
