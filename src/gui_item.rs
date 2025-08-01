@@ -1,6 +1,7 @@
 use std::fmt::{format, Display};
 
 use imgui::OptionOwned;
+use serde::{Deserialize, Serialize};
 
 use crate::{GuiProvider};
 
@@ -8,7 +9,7 @@ use crate::{GuiProvider};
 pub trait GuiReturn: Clone { }
 
 
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 pub enum Item<T> {
   // elements
   Text(String),

@@ -6,3 +6,5 @@ edition = "2021"
 [dependencies]
 imgui = { git = "https://github.com/Plegeus/RustImGui.git" }
 imgui_derive = { git = "https://github.com/Plegeus/RustImGui.git" }
+serde = { version = "1.0.219", features = ["derive"]}
+
