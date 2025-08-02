@@ -5,6 +5,7 @@ pub mod gui_item;
 use std::fmt::{Display};
 pub use imgui::{ self, * };
 use crate::{gui_item::{Item}, provider::CheckedProvider};
+pub use crate::provider::CheckedProvider as Provider;
 
 
 pub trait GuiProvider {
