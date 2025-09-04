@@ -5,8 +5,10 @@ edition = "2021"
 
 [dependencies]
 #imgui = { git = "https://github.com/Plegeus/RustImGui.git" }
-imgui = { path = "/Users/timo/Documents/coding/black-death-studios/RustImGui/imgui" }
+#imgui = { path = "/Users/timo/Documents/coding/black-death-studios/RustImGui/imgui" }
+imgui = { path = "../RustImGui/imgui" }
 #imgui_derive = { git = "https://github.com/Plegeus/RustImGui.git" }
-imgui_derive = { path = "/Users/timo/Documents/coding/black-death-studios/RustImGui/imgui_derive" }
+#imgui_derive = { path = "/Users/timo/Documents/coding/black-death-studios/RustImGui/imgui_derive" }
+imgui_derive = { path = "../RustImGui/imgui_derive" }
 serde = { version = "1.0.219", features = ["derive"]}
 
