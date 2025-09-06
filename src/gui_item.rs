@@ -1,4 +1,4 @@
-use std::fmt::{format, Display};
+use std::fmt::{Display};
 
 use imgui::OptionOwned;
 use serde::{Deserialize, Serialize};
@@ -47,7 +47,7 @@ impl<T: Clone> Item<T> {
   }
 
   // control
-  pub fn let_<D: Display, U>(name: D, value: U) -> Self {
+  pub fn let_<D: Display, U>(_name: D, _value: U) -> Self {
     unimplemented!()
   }
   pub fn if_(cond: Item<bool>, conseq: Item<T>) -> Self {
